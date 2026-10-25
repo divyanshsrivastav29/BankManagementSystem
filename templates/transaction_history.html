@@ -1,0 +1,192 @@
+
+{% extends "base.html" %}
+
+{% block title %}Transaction History | BankSphere{% endblock %}
+
+{% block content %}
+<div class="th-page">
+
+    <header class="th-header">
+        <div>
+            <div class="th-breadcrumb">Workspace / Transactions</div>
+            <h1>Transaction History</h1>
+            <p>Track deposits, withdrawals and other account activity.</p>
+        </div>
+        <a class="th-back" href="{{ url_for('dashboard') }}">
+            <span>←</span> Dashboard
+        </a>
+    </header>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="th-messages">
+                {% for category, message in messages %}
+                    <div class="th-message th-message-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <section class="th-summary">
+        <div class="th-summary-icon">⇄</div>
+        <div>
+            <span>TRANSACTION RECORDS</span>
+            <strong>
+                {% if transaction_records %}
+                    {{ transaction_records|length }}
+                {% else %}
+                    0
+                {% endif %}
+            </strong>
+            <small>Records displayed on this page</small>
+        </div>
+        <div class="th-summary-note">
+            <span class="th-live-dot"></span>
+            Banking activity overview
+        </div>
+    </section>
+
+    <section class="th-panel">
+        <div class="th-panel-heading">
+            <div>
+                <h2>All Transactions</h2>
+                <p>Showing the transaction records provided by the system.</p>
+            </div>
+
+            <label class="th-search">
+                <span>⌕</span>
+                <input type="search" id="th-search-input"
+                       placeholder="Search visible records..."
+                       aria-label="Search transactions">
+            </label>
+        </div>
+
+        {% if transaction_records %}
+            <div class="th-table-wrap">
+                <table class="th-table" id="th-table">
+                    <thead>
+                        <tr>
+                            <th>REFERENCE</th>
+                            <th>ACCOUNT</th>
+                            <th>TYPE</th>
+                            <th>AMOUNT</th>
+                            <th>DESCRIPTION</th>
+                            <th>DATE &amp; TIME</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for transaction, account in transaction_records %}
+                            <tr class="th-row">
+                                <td>
+                                    <span class="th-reference">
+                                        {{ transaction.transaction_ref or "—" }}
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <a class="th-account"
+                                       href="{{ url_for('account_details', account_id=account.id) }}">
+                                        <span class="th-account-icon">▤</span>
+                                        <span>
+                                            <strong>{{ account.account_number }}</strong>
+                                            <small>View account ↗</small>
+                                        </span>
+                                    </a>
+                                </td>
+
+                                <td>
+                                    {% set type_name = (transaction.transaction_type or 'Other')|lower %}
+                                    {% if type_name == 'deposit' %}
+                                        <span class="th-badge th-deposit">
+                                            <span>↙</span> Deposit
+                                        </span>
+                                    {% elif type_name == 'withdrawal' %}
+                                        <span class="th-badge th-withdrawal">
+                                            <span>↗</span> Withdrawal
+                                        </span>
+                                    {% elif type_name == 'transfer' %}
+                                        <span class="th-badge th-transfer">
+                                            <span>⇄</span> Transfer
+                                        </span>
+                                    {% else %}
+                                        <span class="th-badge th-other">
+                                            {{ transaction.transaction_type or 'Other' }}
+                                        </span>
+                                    {% endif %}
+                                </td>
+
+                                <td class="th-amount">
+                                    ₹{{ "{:,.2f}".format(transaction.amount|float) }}
+                                </td>
+
+                                <td class="th-description">
+                                    {{ transaction.description or "No description" }}
+                                </td>
+
+                                <td>
+                                    {% if transaction.created_at %}
+                                        <span class="th-date">
+                                            {{ transaction.created_at.strftime('%d %b %Y') }}
+                                        </span>
+                                        <small class="th-time">
+                                            {{ transaction.created_at.strftime('%I:%M %p') }}
+                                        </small>
+                                    {% else %}
+                                        <span class="th-date">—</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="th-table-footer">
+                <span id="th-visible-count">
+                    {{ transaction_records|length }} records
+                </span>
+                <span>Amounts displayed in INR (₹)</span>
+            </div>
+        {% else %}
+            <div class="th-empty">
+                <div class="th-empty-icon">⇄</div>
+                <h3>No transactions yet</h3>
+                <p>Transactions will appear here after a deposit, withdrawal or transfer is recorded.</p>
+                <a href="{{ url_for('accounts') }}">Go to Accounts →</a>
+            </div>
+        {% endif %}
+    </section>
+
+    <footer class="th-footer">
+        <span>BankSphere · Transaction Management</span>
+        <a href="{{ url_for('dashboard') }}">Return to dashboard ↑</a>
+    </footer>
+</div>
+
+<script>
+(function () {
+    const input = document.getElementById("th-search-input");
+    const table = document.getElementById("th-table");
+    const count = document.getElementById("th-visible-count");
+
+    if (!input || !table || !count) return;
+
+    const rows = Array.from(table.querySelectorAll("tbody .th-row"));
+
+    input.addEventListener("input", function () {
+        const query = input.value.trim().toLowerCase();
+        let visible = 0;
+
+        rows.forEach(function (row) {
+            const matches = row.textContent.toLowerCase().includes(query);
+            row.hidden = !matches;
+            if (matches) visible++;
+        });
+
+        count.textContent = visible + (visible === 1 ? " record" : " records");
+    });
+})();
+</script>
+{% endblock %}

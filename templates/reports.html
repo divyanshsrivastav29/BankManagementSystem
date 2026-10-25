@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports & Analytics | Bank Management System</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #163b65;
+            --primary-light: #24568c;
+            --background: #f3f6fb;
+            --white: #ffffff;
+            --text: #243247;
+            --muted: #718096;
+            --border: #e3e9f2;
+            --green: #16845b;
+            --red: #d64545;
+            --purple: #7356c9;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.5;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .sidebar {
+            width: 245px;
+            position: fixed;
+            inset: 0 auto 0 0;
+            background: var(--primary);
+            color: white;
+            padding: 28px 18px;
+            z-index: 10;
+        }
+
+        .brand {
+            font-size: 21px;
+            font-weight: 750;
+            padding: 0 12px 7px;
+        }
+
+        .brand-subtitle {
+            padding: 0 12px 30px;
+            color: #c5d5e8;
+            font-size: 12px;
+        }
+
+        .nav-label {
+            color: #b6c9df;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 11px;
+            padding: 0 12px;
+            margin-bottom: 12px;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 12px;
+            margin: 5px 0;
+            border-radius: 9px;
+            color: #e2ebf6;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: var(--primary-light);
+            color: white;
+        }
+
+        .sidebar-footer {
+            position: absolute;
+            bottom: 25px;
+            left: 22px;
+            right: 22px;
+            font-size: 12px;
+            color: #c5d5e8;
+        }
+
+        .main {
+            margin-left: 245px;
+            padding: 30px;
+            max-width: 1800px;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 28px;
+        }
+
+        .page-title {
+            font-size: 27px;
+            font-weight: 750;
+            color: var(--primary);
+        }
+
+        .page-subtitle {
+            font-size: 14px;
+            color: var(--muted);
+            margin-top: 5px;
+        }
+
+        .back-link {
+            display: inline-block;
+            background: var(--white);
+            color: var(--primary);
+            border: 1px solid var(--border);
+            padding: 10px 15px;
+            border-radius: 9px;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .back-link:hover {
+            background: #eaf0f8;
+        }
+
+        .flash-messages {
+            margin-bottom: 20px;
+        }
+
+        .flash {
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            background: #fff3cd;
+            color: #765c00;
+            border: 1px solid #f0dc92;
+            font-size: 14px;
+        }
+
+        .section-heading {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--primary);
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            padding: 22px;
+            box-shadow: 0 3px 12px rgba(24, 48, 80, 0.035);
+            min-width: 0;
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 13px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 750;
+            color: var(--primary);
+            overflow-wrap: anywhere;
+        }
+
+        .stat-note {
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 9px;
+        }
+
+        .stat-card.green .stat-value {
+            color: var(--green);
+        }
+
+        .stat-card.red .stat-value {
+            color: var(--red);
+        }
+
+        .stat-card.purple .stat-value {
+            color: var(--purple);
+        }
+
+        .panel {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            padding: 24px;
+            margin-bottom: 26px;
+            box-shadow: 0 3px 12px rgba(24, 48, 80, 0.035);
+            min-width: 0;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .panel-title {
+            color: var(--primary);
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .panel-description {
+            color: var(--muted);
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        .filter-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            align-items: end;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            min-width: 170px;
+        }
+
+        .form-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d6deea;
+            border-radius: 8px;
+            background: white;
+            font-family: inherit;
+            font-size: 14px;
+            color: var(--text);
+        }
+
+        .form-group input:focus {
+            outline: 2px solid #b7d1f2;
+            border-color: var(--primary-light);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: 8px;
+            padding: 11px 15px;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 650;
+            cursor: pointer;
+            transition: opacity 0.2s, background 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn:hover {
+            opacity: 0.88;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #eaf0f8;
+            color: var(--primary);
+        }
+
+        .btn-green {
+            background: #e3f5ed;
+            color: #126c49;
+        }
+
+        .btn-purple {
+            background: #eee9ff;
+            color: #5c43a5;
+        }
+
+        .export-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .table-wrap {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            white-space: nowrap;
+        }
+
+        thead {
+            background: #f1f5fa;
+        }
+
+        th {
+            color: #53647b;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 14px 13px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            font-size: 13px;
+            padding: 14px 13px;
+            border-bottom: 1px solid #edf1f6;
+            color: #34445a;
+        }
+
+        tbody tr:hover {
+            background: #f8fafd;
+        }
+
+        .reference {
+            color: var(--primary-light);
+            font-weight: 650;
+        }
+
+        .amount {
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .badge-deposit,
+        .badge-transfer-in {
+            color: #126c49;
+            background: #e0f5e9;
+        }
+
+        .badge-withdrawal,
+        .badge-transfer-out {
+            color: #ad3535;
+            background: #fdeaea;
+        }
+
+        .badge-other {
+            color: #5c43a5;
+            background: #eee9ff;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--muted);
+            padding: 35px 15px;
+            font-size: 14px;
+        }
+
+        .table-footer {
+            padding-top: 16px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 10px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        @media (max-width: 1150px) {
+            .summary-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 760px) {
+            .sidebar {
+                position: static;
+                width: 100%;
+                padding: 18px;
+            }
+
+            .brand-subtitle {
+                padding-bottom: 15px;
+            }
+
+            .sidebar-footer {
+                display: none;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 20px 14px;
+            }
+
+            .page-title {
+                font-size: 23px;
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .stat-card {
+                padding: 18px;
+            }
+
+            .stat-value {
+                font-size: 25px;
+            }
+
+            .panel {
+                padding: 17px;
+            }
+
+            .filter-form {
+                align-items: stretch;
+            }
+
+            .form-group {
+                min-width: 100%;
+            }
+
+            .export-actions {
+                width: 100%;
+            }
+
+            .export-actions .btn {
+                flex: 1;
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+
+            .sidebar,
+            .no-print,
+            .footer {
+                display: none !important;
+            }
+
+            .main {
+                margin: 0;
+                padding: 0;
+                max-width: none;
+            }
+
+            .panel,
+            .stat-card {
+                box-shadow: none;
+                break-inside: avoid;
+            }
+
+            .summary-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .table-wrap {
+                overflow: visible;
+            }
+
+            table {
+                white-space: normal;
+            }
+
+            th,
+            td {
+                padding: 7px 5px;
+                font-size: 9px;
+            }
+
+            .page-title {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar">
+        <div class="brand">Bank</div>
+        <div class="brand-subtitle">Bank Management System</div>
+
+        <div class="nav-label">Main Menu</div>
+
+        <a class="nav-link" href="{{ url_for('dashboard') }}">
+            Dashboard
+        </a>
+
+        <a class="nav-link" href="{{ url_for('customers') }}">
+            Customer Management
+        </a>
+
+        <a class="nav-link" href="{{ url_for('accounts') }}">
+            Account Management
+        </a>
+
+        <a class="nav-link" href="{{ url_for('transaction_history') }}">
+            Transaction History
+        </a>
+
+        <a class="nav-link" href="{{ url_for('transfer_money') }}">
+            Transfer Money
+        </a>
+
+        <a class="nav-link active" href="{{ url_for('reports') }}">
+            Reports & Analytics
+        </a>
+
+        <div class="sidebar-footer">
+            Secure banking management<br>
+            Reports & Analytics
+        </div>
+    </aside>
+
+    <main class="main">
+
+        <header class="topbar">
+            <div>
+                <h1 class="page-title">Reports & Analytics</h1>
+                <p class="page-subtitle">
+                    Review banking activity, account balances and transaction reports.
+                </p>
+            </div>
+
+            <a class="back-link no-print"
+               href="{{ url_for('dashboard') }}">
+                &larr; Back to Dashboard
+            </a>
+        </header>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <h2 class="section-heading">Banking Overview</h2>
+
+        <section class="summary-grid">
+
+            <article class="stat-card">
+                <div class="stat-label">Total Customers</div>
+                <div class="stat-value">
+                    {{ total_customers }}
+                </div>
+                <div class="stat-note">Registered customers</div>
+            </article>
+
+            <article class="stat-card purple">
+                <div class="stat-label">Total Accounts</div>
+                <div class="stat-value">
+                    {{ total_accounts }}
+                </div>
+                <div class="stat-note">
+                    {{ active_accounts }} active accounts
+                </div>
+            </article>
+
+            <article class="stat-card green">
+                <div class="stat-label">Total Account Balance</div>
+                <div class="stat-value">
+                    &#8377;{{ "{:,.2f}".format(total_balance|float) }}
+                </div>
+                <div class="stat-note">Combined account balances</div>
+            </article>
+
+            <article class="stat-card">
+                <div class="stat-label">Transactions in Period</div>
+                <div class="stat-value">
+                    {{ transaction_count }}
+                </div>
+                <div class="stat-note">For the selected date range</div>
+            </article>
+
+        </section>
+
+        <h2 class="section-heading">Transaction Summary</h2>
+
+        <section class="summary-grid">
+
+            <article class="stat-card green">
+                <div class="stat-label">Total Deposits</div>
+                <div class="stat-value">
+                    &#8377;{{ "{:,.2f}".format(deposit_total|float) }}
+                </div>
+                <div class="stat-note">Deposit transactions in period</div>
+            </article>
+
+            <article class="stat-card red">
+                <div class="stat-label">Total Withdrawals</div>
+                <div class="stat-value">
+                    &#8377;{{ "{:,.2f}".format(withdrawal_total|float) }}
+                </div>
+                <div class="stat-note">Withdrawal transactions in period</div>
+            </article>
+
+            <article class="stat-card purple">
+                <div class="stat-label">Transfers Out</div>
+                <div class="stat-value">
+                    &#8377;{{ "{:,.2f}".format(transfer_out_total|float) }}
+                </div>
+                <div class="stat-note">Outgoing transfer transactions</div>
+            </article>
+
+            <article class="stat-card">
+                <div class="stat-label">Report Period</div>
+                <div class="stat-value" style="font-size: 18px;">
+                    {{ start_date.strftime('%d %b %Y') if start_date else 'All time' }}
+                </div>
+                <div class="stat-note">
+                    To {{ end_date.strftime('%d %b %Y') if end_date else 'today' }}
+                </div>
+            </article>
+
+        </section>
+
+        <section class="panel">
+            <div class="panel-header">
+                <div>
+                    <h2 class="panel-title">Filter Reports</h2>
+                    <p class="panel-description">
+                        Select a date range to filter transactions and export the results.
+                    </p>
+                </div>
+            </div>
+
+            <form class="filter-form" method="GET"
+                  action="{{ url_for('reports') }}">
+
+                <div class="form-group">
+                    <label for="start_date">Start Date</label>
+                    <input
+                        type="date"
+                        id="start_date"
+                        name="start_date"
+                        value="{{ start_date.isoformat() if start_date else '' }}"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="end_date">End Date</label>
+                    <input
+                        type="date"
+                        id="end_date"
+                        name="end_date"
+                        value="{{ end_date.isoformat() if end_date else '' }}"
+                    >
+                </div>
+
+                <button class="btn btn-primary" type="submit">
+                    Apply Filters
+                </button>
+
+                <a class="btn btn-secondary"
+                   href="{{ url_for('reports') }}">
+                    Reset
+                </a>
+            </form>
+
+            <div class="export-actions no-print">
+
+                <a class="btn btn-green"
+                   href="{{ url_for('export_reports_csv', start_date=start_date.isoformat() if start_date else '', end_date=end_date.isoformat() if end_date else '') }}">
+                    &#8595; Export CSV
+                </a>
+
+                <a class="btn btn-purple"
+                   href="{{ url_for('export_reports_pdf', start_date=start_date.isoformat() if start_date else '', end_date=end_date.isoformat() if end_date else '') }}">
+                    &#8595; Download PDF
+                </a>
+
+                <button class="btn btn-secondary"
+                        type="button"
+                        onclick="window.print()">
+                    Print Report
+                </button>
+
+            </div>
+        </section>
+
+        <section class="panel">
+
+            <div class="panel-header">
+                <div>
+                    <h2 class="panel-title">Transaction History</h2>
+                    <p class="panel-description">
+                        Latest transactions within the selected report period.
+                    </p>
+                </div>
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Transaction Reference</th>
+                            <th>Date &amp; Time</th>
+                            <th>Account Number</th>
+                            <th>Transaction Type</th>
+                            <th>Amount</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for transaction in transaction_records %}
+                            <tr>
+                                <td class="reference">
+                                    {{ transaction.transaction_ref or '-' }}
+                                </td>
+
+                                <td>
+                                    {{ transaction.created_at.strftime('%d-%m-%Y %H:%M') if transaction.created_at else '-' }}
+                                </td>
+
+                                <td>
+                                    {% if transaction.account %}
+                                        {{ transaction.account.account_number }}
+                                    {% else %}
+                                        Unavailable
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    {% set tx_type = transaction.transaction_type|string %}
+                                    {% if tx_type == 'Deposit' %}
+                                        <span class="badge badge-deposit">
+                                            Deposit
+                                        </span>
+                                    {% elif tx_type == 'Withdrawal' %}
+                                        <span class="badge badge-withdrawal">
+                                            Withdrawal
+                                        </span>
+                                    {% elif tx_type == 'Transfer In' %}
+                                        <span class="badge badge-transfer-in">
+                                            Transfer In
+                                        </span>
+                                    {% elif tx_type == 'Transfer Out' %}
+                                        <span class="badge badge-transfer-out">
+                                            Transfer Out
+                                        </span>
+                                    {% else %}
+                                        <span class="badge badge-other">
+                                            {{ tx_type }}
+                                        </span>
+                                    {% endif %}
+                                </td>
+
+                                <td class="amount">
+                                    &#8377;{{ "{:,.2f}".format(transaction.amount|float) }}
+                                </td>
+
+                                <td>
+                                    {{ transaction.description or '-' }}
+                                </td>
+                            </tr>
+
+                        {% else %}
+                            <tr>
+                                <td colspan="6" class="empty-state">
+                                    No transactions found for this date range.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="table-footer">
+                {% if transaction_count > 100 %}
+                    Showing the latest 100 records of
+                    {{ transaction_count }} matching transactions.
+                    Use Export CSV or Download PDF for the complete report.
+                {% else %}
+                    Showing {{ transaction_records|length }}
+                    of {{ transaction_count }} matching transactions.
+                {% endif %}
+            </div>
+
+        </section>
+
+        <footer class="footer">
+            Bank Management System &copy; 2026
+            <br>
+            Confidential banking information — authorized access only.
+        </footer>
+
+    </main>
+
+</body>
+</html>

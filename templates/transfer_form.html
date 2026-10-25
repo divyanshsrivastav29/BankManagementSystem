@@ -1,0 +1,183 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Money Transfer | Bank Management System</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        nav {
+            background: #12345a;
+            color: white;
+            padding: 18px 6%;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 35px auto;
+            padding: 0 18px;
+        }
+
+        .card {
+            background: white;
+            padding: 28px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px #0000000d;
+        }
+
+        h1 {
+            margin-top: 0;
+        }
+
+        .description {
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin: 18px 0 8px;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            background: white;
+            font-size: 15px;
+        }
+
+        button, .back {
+            display: inline-block;
+            margin-top: 22px;
+            padding: 12px 17px;
+            border: none;
+            border-radius: 6px;
+            background: #12345a;
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .back {
+            background: #64748b;
+            margin-left: 6px;
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: 6px;
+            margin: 10px 0;
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .empty {
+            background: #fef3c7;
+            padding: 14px;
+            border-radius: 7px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <strong>🏦 Bank Management System</strong>
+    </nav>
+
+    <main class="container">
+        <section class="card">
+            <h1>Money Transfer</h1>
+            <p class="description">
+                Transfer money between two active accounts.
+                Please verify both accounts and the amount before confirming.
+            </p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% for category, message in messages %}
+                    <div class="message">{{ message }}</div>
+                {% endfor %}
+            {% endwith %}
+
+            {% if accounts|length < 2 %}
+                <div class="empty">
+                    You need at least two active accounts to transfer money.
+                    Create another account or activate an eligible account first.
+                </div>
+            {% else %}
+                <form method="POST">
+                    <input type="hidden"
+                           name="csrf_token"
+                           value="{{ csrf_token() }}">
+
+                    <label for="source_account">From Account</label>
+                    <select id="source_account"
+                            name="source_account"
+                            required>
+                        <option value="">Select source account</option>
+                        {% for account in accounts %}
+                            <option value="{{ account.id }}">
+                                {{ account.account_number }} —
+                                {{ account.account_type }} —
+                                ₹{{ "%.2f"|format(account.balance) }}
+                            </option>
+                        {% endfor %}
+                    </select>
+
+                    <label for="destination_account">To Account</label>
+                    <select id="destination_account"
+                            name="destination_account"
+                            required>
+                        <option value="">Select destination account</option>
+                        {% for account in accounts %}
+                            <option value="{{ account.id }}">
+                                {{ account.account_number }} —
+                                {{ account.account_type }}
+                            </option>
+                        {% endfor %}
+                    </select>
+
+                    <label for="amount">Transfer Amount (₹)</label>
+                    <input type="number"
+                           id="amount"
+                           name="amount"
+                           min="0.01"
+                           max="9999999999999.99"
+                           step="0.01"
+                           placeholder="Enter amount"
+                           required>
+
+                    <p class="description" style="margin-top: 16px;">
+                        Transfers are final once confirmed. Check the
+                        source account, destination account, and amount.
+                    </p>
+
+                    <button type="submit">Confirm Transfer</button>
+
+                    <a class="back"
+                       href="{{ url_for('dashboard') }}">
+                        Cancel
+                    </a>
+                </form>
+            {% endif %}
+        </section>
+    </main>
+</body>
+</html>

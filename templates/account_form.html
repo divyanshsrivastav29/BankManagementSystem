@@ -1,0 +1,137 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open Bank Account</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            padding: 25px;
+        }
+
+        .form-box {
+            max-width: 520px;
+            margin: 20px auto;
+            padding: 25px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        h2 {
+            color: #123b68;
+        }
+
+        label {
+            display: block;
+            margin-top: 16px;
+            font-weight: bold;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 11px;
+            margin-top: 6px;
+            border: 1px solid #cbd5e1;
+            border-radius: 5px;
+            box-sizing: border-box;
+            background: white;
+        }
+
+        button, .cancel, .add-customer {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 11px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 15px;
+        }
+
+        button {
+            background: #123b68;
+            color: white;
+        }
+
+        .cancel, .add-customer {
+            background: #e2e8f0;
+            color: #1e293b;
+        }
+
+        .message {
+            padding: 10px;
+            border-radius: 5px;
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .field-errors {
+            color: #b91c1c;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="form-box">
+    <h2>Open a New Bank Account</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <p class="message {{ category }}">{{ message }}</p>
+        {% endfor %}
+    {% endwith %}
+
+    {% if form.customer_id.choices %}
+        <form method="POST" action="{{ url_for('add_account') }}">
+            {{ form.hidden_tag() }}
+
+            <label for="customer_id">Select Existing Customer</label>
+
+            {{ form.customer_id(id="customer_id", required=true) }}
+
+            {% for error in form.customer_id.errors %}
+                <p class="field-errors">{{ error }}</p>
+            {% endfor %}
+
+            <label for="account_type">Account Type</label>
+
+            {{ form.account_type(id="account_type", required=true) }}
+
+            {% for error in form.account_type.errors %}
+                <p class="field-errors">{{ error }}</p>
+            {% endfor %}
+
+            <p>
+                <strong>Opening Balance:</strong> ₹0.00
+            </p>
+            <p>After opening the account, deposit money using the Deposit option.</p>
+
+            {{ form.submit(class="create-button") }}
+
+            <a class="cancel" href="{{ url_for('accounts') }}">Cancel</a>
+        </form>
+    {% else %}
+        <p>No customers are registered yet. Add a customer first.</p>
+        <a class="add-customer" href="{{ url_for('add_customer') }}">
+            + Add Customer
+        </a>
+    {% endif %}
+</div>
+</body>
+</html>

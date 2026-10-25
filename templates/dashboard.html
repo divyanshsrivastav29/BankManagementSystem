@@ -1,0 +1,271 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard | Bank Management System{% endblock %}
+
+{% block content %}
+<div class="pro-dashboard">
+
+    <!-- Sidebar -->
+    <aside class="pro-sidebar">
+        <a href="{{ url_for('dashboard') }}" class="pro-brand">
+            <span class="pro-brand-icon">₹</span>
+            <span>
+                <strong>Bank</strong>
+                <small>Management System</small>
+            </span>
+        </a>
+
+        <div class="pro-nav-label">WORKSPACE</div>
+
+        <nav class="pro-nav">
+            <a href="{{ url_for('dashboard') }}" class="pro-nav-link active">
+                <span class="pro-nav-icon">▦</span> Dashboard
+            </a>
+            <a href="{{ url_for('customers') }}" class="pro-nav-link">
+                <span class="pro-nav-icon">♙</span> Customers
+            </a>
+            <a href="{{ url_for('accounts') }}" class="pro-nav-link">
+                <span class="pro-nav-icon">▤</span> Accounts
+            </a>
+            <a href="{{ url_for('transaction_history') }}" class="pro-nav-link">
+                <span class="pro-nav-icon">⇄</span> Transactions
+            </a>
+            <a href="{{ url_for('transfer_money') }}" class="pro-nav-link">
+                <span class="pro-nav-icon">⇢</span> Transfer Money
+            </a>
+            <a href="{{ url_for('reports') }}" class="pro-nav-link">
+                <span class="pro-nav-icon">▥</span> Reports
+            </a>
+        </nav>
+
+        <div class="pro-sidebar-bottom">
+            <div class="pro-help-card">
+                <span class="pro-help-icon">✦</span>
+                <strong>Banking made simple</strong>
+                <p>Manage accounts and transactions from one place.</p>
+            </div>
+
+            <div class="pro-user">
+                <div class="pro-avatar">
+                    {{ (current_user.username or 'A')[0]|upper }}
+                </div>
+                <div class="pro-user-info">
+                    <strong>{{ current_user.username }}</strong>
+                    <small>Administrator</small>
+                </div>
+                <form method="POST" action="{{ url_for('logout') }}">
+                    <input type="hidden" name="csrf_token"
+                           value="{{ csrf_token() }}">
+                    <button type="submit" class="pro-logout"
+                            title="Log out" aria-label="Log out">↪</button>
+                </form>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main workspace -->
+    <main class="pro-main">
+
+        <header class="pro-topbar">
+            <div>
+                <div class="pro-breadcrumb">Workspace / Dashboard</div>
+                <h1>Dashboard</h1>
+                <p class="pro-muted">Here's what's happening with your bank today.</p>
+            </div>
+
+            <div class="pro-topbar-right">
+                <div class="pro-date">
+                    <span>◷</span>
+                    <span id="pro-current-date">Bank overview</span>
+                </div>
+                <div class="pro-top-avatar">
+                    {{ (current_user.username or 'A')[0]|upper }}
+                </div>
+            </div>
+        </header>
+
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="pro-flashes">
+                    {% for category, message in messages %}
+                        <div class="pro-flash pro-flash-{{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Welcome banner -->
+        <section class="pro-welcome">
+            <div class="pro-welcome-copy">
+                <span class="pro-eyebrow">BANK MANAGEMENT OVERVIEW</span>
+                <h2>Welcome back, {{ current_user.username }}!</h2>
+                <p>Monitor your banking activity and manage your operations efficiently.</p>
+                <a href="{{ url_for('accounts') }}" class="pro-primary-btn">
+                    Manage Accounts <span>→</span>
+                </a>
+            </div>
+            <div class="pro-welcome-art" aria-hidden="true">
+                <div class="pro-art-circle pro-art-circle-one"></div>
+                <div class="pro-art-circle pro-art-circle-two"></div>
+                <div class="pro-art-card">
+                    <div class="pro-art-card-top"><span>●</span><span>•••• 2048</span></div>
+                    <div class="pro-art-chip"></div>
+                    <div class="pro-art-card-bottom">
+                        <span>BANK</span><span>VISA</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Summary cards -->
+        <section class="pro-section">
+            <div class="pro-section-heading">
+                <div>
+                    <h2>Financial overview</h2>
+                    <p>Summary of your current records</p>
+                </div>
+            </div>
+
+            <div class="pro-stats-grid">
+                <article class="pro-stat-card">
+                    <div class="pro-stat-top">
+                        <span class="pro-stat-icon pro-icon-blue">♙</span>
+                        <span class="pro-stat-tag">CUSTOMERS</span>
+                    </div>
+                    <p class="pro-stat-label">Total Customers</p>
+                    <div class="pro-stat-value">{{ total_customers }}</div>
+                    <div class="pro-stat-footer">Registered customers</div>
+                </article>
+
+                <article class="pro-stat-card">
+                    <div class="pro-stat-top">
+                        <span class="pro-stat-icon pro-icon-purple">▤</span>
+                        <span class="pro-stat-tag">ACCOUNTS</span>
+                    </div>
+                    <p class="pro-stat-label">Total Accounts</p>
+                    <div class="pro-stat-value">{{ total_accounts }}</div>
+                    <div class="pro-stat-footer">Bank account records</div>
+                </article>
+
+                <article class="pro-stat-card">
+                    <div class="pro-stat-top">
+                        <span class="pro-stat-icon pro-icon-green">₹</span>
+                        <span class="pro-stat-tag">BALANCE</span>
+                    </div>
+                    <p class="pro-stat-label">Total Balance</p>
+                    <div class="pro-stat-value pro-balance-value">
+                        ₹{{ "{:,.2f}".format(total_balance|default(0)|float) }}
+                    </div>
+                    <div class="pro-stat-footer">Combined account balance</div>
+                </article>
+
+                <article class="pro-stat-card">
+                    <div class="pro-stat-top">
+                        <span class="pro-stat-icon pro-icon-orange">⇄</span>
+                        <span class="pro-stat-tag">ACTIVITY</span>
+                    </div>
+                    <p class="pro-stat-label">Transactions</p>
+                    <div class="pro-stat-value">{{ total_transactions }}</div>
+                    <div class="pro-stat-footer">Recorded transactions</div>
+                </article>
+            </div>
+        </section>
+
+        <!-- Quick actions -->
+        <section class="pro-section">
+            <div class="pro-section-heading">
+                <div>
+                    <h2>Quick actions</h2>
+                    <p>Get things done with one click</p>
+                </div>
+            </div>
+
+            <div class="pro-actions-grid">
+                <a href="{{ url_for('customers') }}" class="pro-action-card">
+                    <span class="pro-action-icon pro-icon-blue">♙</span>
+                    <span class="pro-action-text">
+                        <strong>Manage Customers</strong>
+                        <small>Add and manage customer records</small>
+                    </span>
+                    <span class="pro-action-arrow">↗</span>
+                </a>
+
+                <a href="{{ url_for('accounts') }}" class="pro-action-card">
+                    <span class="pro-action-icon pro-icon-purple">▤</span>
+                    <span class="pro-action-text">
+                        <strong>Manage Accounts</strong>
+                        <small>Open and manage bank accounts</small>
+                    </span>
+                    <span class="pro-action-arrow">↗</span>
+                </a>
+
+                <a href="{{ url_for('accounts') }}" class="pro-action-card">
+                    <span class="pro-action-icon pro-icon-green">＋</span>
+                    <span class="pro-action-text">
+                        <strong>Deposit Money</strong>
+                        <small>Open account management to deposit</small>
+                    </span>
+                    <span class="pro-action-arrow">↗</span>
+                </a>
+
+                <a href="{{ url_for('accounts') }}" class="pro-action-card">
+                    <span class="pro-action-icon pro-icon-orange">−</span>
+                    <span class="pro-action-text">
+                        <strong>Withdraw Money</strong>
+                        <small>Open account management to withdraw</small>
+                    </span>
+                    <span class="pro-action-arrow">↗</span>
+                </a>
+
+                <a href="{{ url_for('transfer_money') }}" class="pro-action-card">
+                    <span class="pro-action-icon pro-icon-teal">⇄</span>
+                    <span class="pro-action-text">
+                        <strong>Transfer Money</strong>
+                        <small>Transfer funds between accounts</small>
+                    </span>
+                    <span class="pro-action-arrow">↗</span>
+                </a>
+
+                <a href="{{ url_for('transaction_history') }}" class="pro-action-card">
+                    <span class="pro-action-icon pro-icon-pink">▧</span>
+                    <span class="pro-action-text">
+                        <strong>Transaction History</strong>
+                        <small>Review recorded transactions</small>
+                    </span>
+                    <span class="pro-action-arrow">↗</span>
+                </a>
+
+                <a href="{{ url_for('reports') }}" class="pro-action-card">
+                    <span class="pro-action-icon pro-icon-blue">▥</span>
+                    <span class="pro-action-text">
+                        <strong>Reports & Analytics</strong>
+                        <small>View available banking reports</small>
+                    </span>
+                    <span class="pro-action-arrow">↗</span>
+                </a>
+            </div>
+        </section>
+
+        <footer class="pro-footer">
+            <span>BankSphere Management System</span>
+            <span>Secure administration workspace</span>
+        </footer>
+    </main>
+</div>
+
+<script>
+(function () {
+    const dateElement = document.getElementById("pro-current-date");
+    if (dateElement) {
+        dateElement.textContent = new Intl.DateTimeFormat("en-IN", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+        }).format(new Date());
+    }
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,180 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Details | Bank Management System</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        nav {
+            background: #12345a;
+            color: white;
+            padding: 18px 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 16px;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 35px auto;
+            padding: 0 18px;
+        }
+
+        .card {
+            background: white;
+            padding: 28px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px #0000000d;
+        }
+
+        h1 {
+            margin-top: 0;
+        }
+
+        .details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 18px;
+        }
+
+        .item {
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 8px;
+            overflow-wrap: anywhere;
+        }
+
+        .label {
+            display: block;
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .value {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .balance {
+            color: #15803d;
+            font-size: 23px;
+        }
+
+        .actions {
+            margin-top: 24px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 11px 16px;
+            margin: 5px 8px 5px 0;
+            border-radius: 6px;
+            background: #12345a;
+            color: white;
+            text-decoration: none;
+        }
+
+        .back {
+            background: #475569;
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <strong>Bank Management System</strong>
+        <div>
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('accounts') }}">Accounts</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="card">
+            <h1>Account Details</h1>
+            <p>View the account and its associated customer information.</p>
+
+            <div class="details">
+                <div class="item">
+                    <span class="label">Account Number</span>
+                    <span class="value">{{ account.account_number }}</span>
+                </div>
+
+                <div class="item">
+                    <span class="label">Customer Name</span>
+                    <span class="value">{{ customer.full_name }}</span>
+                </div>
+
+                <div class="item">
+                    <span class="label">Account Type</span>
+                    <span class="value">{{ account.account_type }}</span>
+                </div>
+
+                <div class="item">
+                    <span class="label">Current Balance</span>
+                    <span class="value balance">₹{{ "%.2f"|format(account.balance) }}</span>
+                </div>
+
+                <div class="item">
+                    <span class="label">Account Status</span>
+                    <span class="value">{{ account.status }}</span>
+                </div>
+
+                <div class="item">
+                    <span class="label">Customer Email</span>
+                    <span class="value">{{ customer.email }}</span>
+                </div>
+
+                <div class="item">
+                    <span class="label">Customer Phone</span>
+                    <span class="value">{{ customer.phone }}</span>
+                </div>
+
+                <div class="item">
+                    <span class="label">Date Created</span>
+                    <span class="value">
+                        {{ account.created_at.strftime('%d-%m-%Y') if account.created_at else 'N/A' }}
+                    </span>
+                </div>
+            </div>
+
+            <div class="actions">
+                <a class="btn back" href="{{ url_for('accounts') }}">
+                    Back to Accounts
+                </a>
+                <a class="btn" href="{{ url_for('deposit', account_id=account.id) }}">
+                    Deposit
+                </a>
+                <a class="btn" href="{{ url_for('withdraw', account_id=account.id) }}">
+                    Withdraw
+                </a>
+                <a class="btn" href="{{ url_for('dashboard') }}">
+                    Dashboard
+                </a>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

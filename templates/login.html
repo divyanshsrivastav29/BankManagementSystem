@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Login | Bank</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+
+        .login-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            width: 100%;
+            max-width: 1050px;
+            min-height: 620px;
+            overflow: hidden;
+            border-radius: 22px;
+            background: #fff;
+            box-shadow: 0 25px 70px rgba(15, 23, 42, .12);
+        }
+
+        /* Left branding panel */
+        .brand-panel {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 45px;
+            overflow: hidden;
+            color: #fff;
+            background: linear-gradient(145deg, #0b1739, #153d7a 65%, #176b87);
+        }
+
+        .brand-panel::before,
+        .brand-panel::after {
+            content: "";
+            position: absolute;
+            border: 1px solid rgba(255,255,255,.12);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .brand-panel::before {
+            width: 430px;
+            height: 430px;
+            right: -220px;
+            top: 90px;
+        }
+
+        .brand-panel::after {
+            width: 330px;
+            height: 330px;
+            right: -170px;
+            top: 140px;
+        }
+
+        .brand,
+        .brand-content,
+        .brand-footer {
+            position: relative;
+            z-index: 1;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        .brand-logo {
+            width: 48px;
+            height: 48px;
+            display: grid;
+            place-items: center;
+            border-radius: 14px;
+            background: rgba(255,255,255,.13);
+            border: 1px solid rgba(255,255,255,.2);
+            font-size: 25px;
+        }
+
+        .brand-name {
+            font-size: 23px;
+            font-weight: 750;
+            letter-spacing: .5px;
+        }
+
+        .brand-tagline {
+            margin-top: 3px;
+            color: #b8d7ff;
+            font-size: 12px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .brand-content {
+            margin-top: 55px;
+            margin-bottom: 40px;
+        }
+
+        .eyebrow {
+            display: inline-block;
+            padding: 8px 12px;
+            margin-bottom: 22px;
+            border: 1px solid rgba(255,255,255,.2);
+            border-radius: 30px;
+            background: rgba(255,255,255,.08);
+            color: #c5e5ff;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+        }
+
+        .brand-content h2 {
+            max-width: 390px;
+            font-size: clamp(30px, 3.5vw, 43px);
+            line-height: 1.2;
+            letter-spacing: -1.2px;
+        }
+
+        .brand-content p {
+            max-width: 360px;
+            margin-top: 20px;
+            color: #c7d8f0;
+            font-size: 15px;
+            line-height: 1.9;
+        }
+
+        .feature-list {
+            display: grid;
+            gap: 17px;
+            margin-top: 35px;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #e2edff;
+            font-size: 14px;
+        }
+
+        .feature-icon {
+            display: grid;
+            place-items: center;
+            width: 30px;
+            height: 30px;
+            border-radius: 9px;
+            background: rgba(255,255,255,.12);
+            color: #a9e6ff;
+        }
+
+        .brand-footer {
+            color: #a8bfdc;
+            font-size: 12px;
+        }
+
+        /* Right login panel */
+        .form-panel {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 50px 45px;
+        }
+
+        .login-content {
+            width: 100%;
+            max-width: 360px;
+        }
+
+        .mobile-brand {
+            display: none;
+        }
+
+        .welcome-label {
+            color: #2563eb;
+            font-size: 12px;
+            font-weight: 750;
+            letter-spacing: 1.8px;
+            text-transform: uppercase;
+        }
+
+        .login-content h1 {
+            margin-top: 12px;
+            color: #111c35;
+            font-size: 32px;
+            letter-spacing: -.8px;
+        }
+
+        .intro {
+            margin-top: 10px;
+            margin-bottom: 32px;
+            color: #718096;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .messages {
+            margin-bottom: 20px;
+        }
+
+        .message {
+            padding: 12px 14px;
+            margin-bottom: 8px;
+            border-radius: 9px;
+            background: #fee2e2;
+            color: #991b1b;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .message.success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .message.info {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .form-group {
+            margin-bottom: 21px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 9px;
+            color: #26344d;
+            font-size: 13px;
+            font-weight: 650;
+        }
+
+        .input-wrap {
+            position: relative;
+        }
+
+        .input-wrap input {
+            display: block;
+            width: 100%;
+            height: 51px;
+            padding: 0 15px;
+            border: 1px solid #dce3ed;
+            border-radius: 10px;
+            outline: none;
+            background: #fff;
+            color: #16233b;
+            font-size: 14px;
+            transition: border-color .2s, box-shadow .2s;
+        }
+
+        .input-wrap input::placeholder {
+            color: #a0aabd;
+        }
+
+        .input-wrap input:focus {
+            border-color: #3976ed;
+            box-shadow: 0 0 0 4px rgba(57,118,237,.1);
+        }
+
+        .password-input {
+            padding-right: 65px !important;
+        }
+
+        .toggle-password {
+            position: absolute;
+            top: 50%;
+            right: 13px;
+            transform: translateY(-50%);
+            padding: 5px;
+            border: none;
+            background: transparent;
+            color: #4264a0;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .forgot-row {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: -5px;
+            margin-bottom: 25px;
+        }
+
+        .forgot-row a {
+            color: #2563eb;
+            font-size: 13px;
+            font-weight: 650;
+            text-decoration: none;
+        }
+
+        .forgot-row a:hover {
+            text-decoration: underline;
+        }
+
+        .login-btn {
+            display: block;
+            width: 100%;
+            min-height: 52px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(100deg, #1d4ed8, #2563eb);
+            box-shadow: 0 8px 18px rgba(37,99,235,.2);
+            color: #fff;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform .2s, box-shadow .2s;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 12px 22px rgba(37,99,235,.27);
+        }
+
+        .security-note {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 25px;
+            color: #718096;
+            font-size: 12px;
+        }
+
+        .security-note span {
+            color: #16865c;
+            font-size: 15px;
+        }
+
+        .bottom-note {
+            margin-top: 35px;
+            padding-top: 20px;
+            border-top: 1px solid #edf0f5;
+            color: #9aa5b5;
+            text-align: center;
+            font-size: 11px;
+            line-height: 1.7;
+        }
+
+        @media (max-width: 800px) {
+            body {
+                padding: 20px;
+            }
+
+            .login-wrapper {
+                grid-template-columns: 1fr;
+                max-width: 470px;
+                min-height: auto;
+            }
+
+            .brand-panel {
+                display: none;
+            }
+
+            .form-panel {
+                padding: 40px 30px;
+            }
+
+            .mobile-brand {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin-bottom: 35px;
+            }
+
+            .mobile-brand .brand-logo {
+                background: #e8efff;
+                color: #1d4ed8;
+            }
+
+            .mobile-brand .brand-name {
+                color: #10203e;
+                font-size: 20px;
+            }
+
+            .mobile-brand .brand-tagline {
+                color: #64748b;
+                font-size: 10px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .form-panel {
+                padding: 30px 20px;
+            }
+
+            .login-content h1 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="login-wrapper">
+
+        <section class="brand-panel">
+            <div class="brand">
+                <div class="brand-logo">🏦</div>
+                <div>
+                    <div class="brand-name">BANK</div>
+                    <div class="brand-tagline">Banking made simple</div>
+                </div>
+            </div>
+
+            <div class="brand-content">
+                <span class="eyebrow">YOUR FINANCES, YOUR FUTURE</span>
+
+                <h2>Banking built around your peace of mind.</h2>
+
+                <p>
+                    Manage your accounts, track transactions and stay
+                    in control of your finances through one secure
+                    banking experience.
+                </p>
+
+                <div class="feature-list">
+                    <div class="feature">
+                        <span class="feature-icon">✓</span>
+                        Secure account access
+                    </div>
+                    <div class="feature">
+                        <span class="feature-icon">↗</span>
+                        Simple transaction management
+                    </div>
+                    <div class="feature">
+                        <span class="feature-icon">▤</span>
+                        Clear account statements
+                    </div>
+                </div>
+            </div>
+
+            <div class="brand-footer">
+                A smarter way to manage your banking.
+            </div>
+        </section>
+
+        <section class="form-panel">
+            <div class="login-content">
+
+                <div class="mobile-brand">
+                    <div class="brand-logo">⌂</div>
+                    <div>
+                        <div class="brand-name">FINOVA</div>
+                        <div class="brand-tagline">Banking made simple</div>
+                    </div>
+                </div>
+
+                <div class="welcome-label">Welcome back</div>
+                <h1>Sign in to your account</h1>
+                <p class="intro">
+                    Enter your login details to access your banking dashboard.
+                </p>
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        <div class="messages">
+                            {% for category, message in messages %}
+                                <div class="message
+                                    {% if category == 'success' %}success
+                                    {% elif category == 'info' %}info
+                                    {% endif %}">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endwith %}
+
+                <form method="POST" action="{{ url_for('login') }}">
+                    {{ form.hidden_tag() }}
+
+                    <div class="form-group">
+                        {{ form.username.label }}
+
+                        <div class="input-wrap">
+                            {{ form.username(
+                                placeholder="Enter your username",
+                                autocomplete="username",
+                                required=true
+                            ) }}
+                        </div>
+
+                        {% for error in form.username.errors %}
+                            <small style="color:#dc2626;">{{ error }}</small>
+                        {% endfor %}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form.password.label }}
+
+                        <div class="input-wrap">
+                            {{ form.password(
+                                placeholder="Enter your password",
+                                autocomplete="current-password",
+                                class="password-input",
+                                id="password",
+                                required=true
+                            ) }}
+
+                            <button
+                                type="button"
+                                class="toggle-password"
+                                id="togglePassword"
+                                aria-label="Show password"
+                            >
+                                Show
+                            </button>
+                        </div>
+
+                        {% for error in form.password.errors %}
+                            <small style="color:#dc2626;">{{ error }}</small>
+                        {% endfor %}
+                    </div>
+
+                    <div class="forgot-row">
+                        <a href="{{ url_for('forgot_password') }}">
+                            Forgot Password?
+                        </a>
+                    </div>
+
+                    {{ form.submit(
+                        class="login-btn",
+                        value="Sign In to Dashboard"
+                    ) }}
+                </form>
+
+                <div class="security-note">
+                    <span>●</span>
+                    Secure sign-in to your account
+                </div>
+
+                <div class="bottom-note">
+                    &copy; 2026 Bank Management System.<br>
+                    For authorized users only.
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        const passwordField = document.getElementById("password");
+        const toggleButton = document.getElementById("togglePassword");
+
+        toggleButton.addEventListener("click", function () {
+            const isPassword = passwordField.type === "password";
+
+            passwordField.type = isPassword ? "text" : "password";
+            toggleButton.textContent = isPassword ? "Hide" : "Show";
+            toggleButton.setAttribute(
+                "aria-label",
+                isPassword ? "Hide password" : "Show password"
+            );
+        });
+    </script>
+</body>
+</html>

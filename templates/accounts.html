@@ -1,0 +1,382 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Management | Banking Management System</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: auto;
+        }
+
+        .header, .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 22px;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+            color: #0f172a;
+        }
+
+        .subtitle {
+            color: #64748b;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 9px 12px;
+            border: 0;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+            margin: 2px;
+        }
+
+        .btn:hover { opacity: 0.85; }
+        .primary { background: #2563eb; }
+        .success { background: #16a34a; }
+        .warning { background: #d97706; }
+        .danger { background: #dc2626; }
+        .secondary { background: #475569; }
+
+        .messages { margin-bottom: 18px; }
+
+        .alert {
+            padding: 12px 15px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+
+        .alert-success { background: #dcfce7; color: #166534; }
+        .alert-error { background: #fee2e2; color: #991b1b; }
+        .alert-warning { background: #fef3c7; color: #92400e; }
+        .alert-info { background: #dbeafe; color: #1e40af; }
+
+        .search-box {
+            width: 100%;
+            max-width: 400px;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            font-size: 14px;
+        }
+
+        .table-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(15, 23, 42, 0.07);
+            overflow: hidden;
+        }
+
+        .table-wrapper { overflow-x: auto; }
+
+        table {
+            width: 100%;
+            min-width: 1100px;
+            border-collapse: collapse;
+        }
+
+        thead { background: #0f172a; color: white; }
+
+        th, td {
+            padding: 14px 12px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: middle;
+        }
+
+        th {
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        td { font-size: 13px; }
+        tbody tr:hover { background: #f8fafc; }
+
+        .account-number {
+            font-weight: bold;
+            color: #1d4ed8;
+        }
+
+        .balance {
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 9px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .active { background: #dcfce7; color: #166534; }
+        .closed { background: #fee2e2; color: #991b1b; }
+        .frozen { background: #fef3c7; color: #92400e; }
+        .type-badge { background: #dbeafe; color: #1d4ed8; }
+
+        .actions { min-width: 310px; }
+        .actions form { display: inline-block; }
+
+        .empty-state {
+            padding: 55px 20px;
+            text-align: center;
+        }
+
+        .empty-state p {
+            margin: 12px 0 20px;
+            color: #64748b;
+        }
+
+        .footer {
+            margin-top: 20px;
+            text-align: right;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 15px; }
+            h1 { font-size: 23px; }
+            .search-box { max-width: 100%; }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <header class="header">
+        <div>
+            <h1>Account Management</h1>
+            <p class="subtitle">
+                Manage accounts, balances and account status.
+            </p>
+        </div>
+
+        <div>
+            <a href="{{ url_for('dashboard') }}"
+               class="btn secondary">Dashboard</a>
+
+            <a href="{{ url_for('add_account') }}"
+               class="btn primary">+ Open New Account</a>
+        </div>
+    </header>
+
+    <div class="messages">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="alert
+                    {% if category == 'success' %}alert-success
+                    {% elif category == 'error' %}alert-error
+                    {% elif category == 'warning' %}alert-warning
+                    {% else %}alert-info{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endwith %}
+    </div>
+
+    <div class="toolbar">
+        <input type="text"
+               id="accountSearch"
+               class="search-box"
+               placeholder="Search account, customer, type or status..."
+               aria-label="Search accounts">
+
+        <a href="{{ url_for('transaction_history') }}"
+           class="btn secondary">Transaction History</a>
+    </div>
+
+    <div class="table-card">
+        {% if accounts %}
+        <div class="table-wrapper">
+            <table id="accountsTable">
+                <thead>
+                    <tr>
+                        <th>Account No.</th>
+                        <th>Customer</th>
+                        <th>Email</th>
+                        <th>Account Type</th>
+                        <th>Balance</th>
+                        <th>Status</th>
+                        <th>Created On</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                {% for account in accounts %}
+                    <tr>
+                        <td>
+                            <span style="
+                                display: inline-block;
+                                color: #1d4ed8;
+                                font-weight: 700;
+                                font-size: 15px;
+                                letter-spacing: 1px;
+                                white-space: nowrap;
+                            ">
+                                {{ account.account_number }}
+                            </span>
+                        </td>
+
+                        <td>
+                            {{ account.customer.full_name
+                               if account.customer else 'N/A' }}
+                        </td>
+
+                        <td>
+                            {{ account.customer.email
+                               if account.customer else 'N/A' }}
+                        </td>
+
+                        <td>
+                            <span class="badge type-badge">
+                                {{ account.account_type }}
+                            </span>
+                        </td>
+
+                        <td class="balance">
+                            ₹{{ "%.2f"|format(account.balance|float) }}
+                        </td>
+
+                        <td>
+                            {% if account.status == 'Active' %}
+                                <span class="badge active">Active</span>
+                            {% elif account.status == 'Closed' %}
+                                <span class="badge closed">Closed</span>
+                            {% elif account.status == 'Frozen' %}
+                                <span class="badge frozen">Frozen</span>
+                            {% else %}
+                                <span class="badge">{{ account.status }}</span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {{ account.created_at.strftime('%d-%m-%Y')
+                               if account.created_at else 'N/A' }}
+                        </td>
+
+                        <td class="actions">
+                            <a href="{{ url_for(
+                                'account_details',
+                                account_id=account.id
+                            ) }}" class="btn primary">View</a>
+
+                            {% if account.status == 'Active' %}
+                                <a href="{{ url_for(
+                                    'deposit',
+                                    account_id=account.id
+                                ) }}" class="btn success">Deposit</a>
+
+                                <a href="{{ url_for(
+                                    'withdraw',
+                                    account_id=account.id
+                                ) }}" class="btn warning">Withdraw</a>
+
+                                <form method="POST"
+                                      action="{{ url_for(
+                                          'close_account',
+                                          account_id=account.id
+                                      ) }}"
+                                      onsubmit="return confirm(
+                                          'Close this account? Its balance must be zero.'
+                                      );">
+                                    <input type="hidden"
+                                           name="csrf_token"
+                                           value="{{ csrf_token() }}">
+
+                                    <button type="submit"
+                                            class="btn danger">
+                                        Close Account
+                                    </button>
+                                </form>
+                            {% endif %}
+
+                            {% if account.balance|float == 0 %}
+                                <form method="POST"
+                                      action="{{ url_for(
+                                          'delete_account',
+                                          account_id=account.id
+                                      ) }}"
+                                      onsubmit="return confirm(
+                                          'Permanently delete account {{ account.account_number }}? This cannot be undone.'
+                                      );">
+                                    <input type="hidden"
+                                           name="csrf_token"
+                                           value="{{ csrf_token() }}">
+
+                                    <button type="submit"
+                                            class="btn danger">
+                                        Delete Account
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% else %}
+            <div class="empty-state">
+                <h2>No Bank Accounts Found</h2>
+                <p>Open a new account to see it listed here.</p>
+                <a href="{{ url_for('add_account') }}"
+                   class="btn primary">Open New Account</a>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="footer">
+        Total accounts: {{ accounts|length }}
+    </div>
+
+</div>
+
+<script>
+    const searchInput = document.getElementById("accountSearch");
+    const table = document.getElementById("accountsTable");
+
+    if (searchInput && table) {
+        searchInput.addEventListener("input", function () {
+            const query = this.value.toLowerCase().trim();
+
+            table.querySelectorAll("tbody tr").forEach(function (row) {
+                row.style.display =
+                    row.innerText.toLowerCase().includes(query) ? "" : "none";
+            });
+        });
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,116 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #eef2f7;
+            padding: 25px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+        }
+
+        a, button {
+            display: inline-block;
+            padding: 9px 13px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            margin: 3px;
+        }
+
+        .add { background: #123b68; color: white; }
+        .edit { background: #e7a323; color: white; }
+        .delete { background: #c62828; color: white; }
+        .back { background: #ddd; color: #222; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th { background: #123b68; color: white; }
+
+        .message { padding: 10px; background: #e8f5e9; margin: 8px 0; }
+        .error { background: #ffebee; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Customer Management</h1>
+
+    <a class="back" href="{{ url_for('dashboard') }}">Dashboard</a>
+    <a class="add" href="{{ url_for('add_customer') }}">+ Add Customer</a>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="message {% if category == 'error' %}error{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endwith %}
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Address</th>
+                <th>Date of Birth</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for customer in customers %}
+            <tr>
+                <td>{{ customer.id }}</td>
+                <td>{{ customer.full_name }}</td>
+                <td>{{ customer.email }}</td>
+                <td>{{ customer.phone }}</td>
+                <td>{{ customer.address }}</td>
+                <td>{{ customer.date_of_birth }}</td>
+                <td>
+                    <a class="edit"
+                       href="{{ url_for('edit_customer', customer_id=customer.id) }}">
+                        Edit
+                    </a>
+
+                    <form method="POST"
+                          action="{{ url_for('delete_customer', customer_id=customer.id) }}"
+                          style="display:inline"
+                          onsubmit="return confirm('Delete this customer?')">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button class="delete" type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7">No customers found. Click Add Customer to begin.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

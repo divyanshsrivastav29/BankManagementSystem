@@ -1,0 +1,89 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if customer %}Edit{% else %}Add{% endif %} Customer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #eef2f7;
+            padding: 25px;
+        }
+
+        .form-box {
+            max-width: 500px;
+            margin: 20px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+        }
+
+        label { display: block; margin-top: 14px; }
+
+        input, textarea {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button, a {
+            display: inline-block;
+            margin-top: 18px;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        button { background: #123b68; color: white; }
+        a { background: #ddd; color: #222; }
+        .message { color: #b00020; margin-top: 10px; }
+    </style>
+</head>
+<body>
+<div class="form-box">
+    <h2>{% if customer %}Edit Customer{% else %}Add Customer{% endif %}</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <p class="message">{{ message }}</p>
+        {% endfor %}
+    {% endwith %}
+
+    <form method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <label for="full_name">Full Name</label>
+        <input id="full_name" name="full_name" required maxlength="150"
+               value="{{ customer.full_name if customer else '' }}">
+
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" required maxlength="150"
+               value="{{ customer.email if customer else '' }}">
+
+        <label for="phone">Phone</label>
+        <input id="phone" name="phone" required maxlength="20"
+               value="{{ customer.phone if customer else '' }}">
+
+        <label for="address">Address</label>
+        <textarea id="address" name="address" required>{{ customer.address if customer else '' }}</textarea>
+
+        <label for="date_of_birth">Date of Birth</label>
+        <input id="date_of_birth" name="date_of_birth" type="date" required
+               value="{{ customer.date_of_birth.isoformat() if customer and customer.date_of_birth else '' }}">
+
+        <button type="submit">
+            {% if customer %}Update Customer{% else %}Save Customer{% endif %}
+        </button>
+
+        <a href="{{ url_for('customers') }}">Cancel</a>
+    </form>
+</div>
+</body>
+</html>
