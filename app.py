@@ -6,6 +6,7 @@ import uuid
 from datetime import date, datetime, time
 from decimal import Decimal, InvalidOperation
 from pathlib import Path
+from urllib.parse import quote_plus
 from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
 import click
 from dotenv import load_dotenv
@@ -59,7 +60,24 @@ load_dotenv(BASE_DIR / ".env", override=True)
 app = Flask(__name__)
 
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
-app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
+
+db_host = os.getenv("DB_HOST")
+db_port = os.getenv("DB_PORT")
+db_name = os.getenv("DB_NAME")
+db_user = os.getenv("DB_USER")
+db_password = os.getenv("DB_PASSWORD")
+
+if all([db_host, db_name, db_user, db_password]):
+    app.config["SQLALCHEMY_DATABASE_URI"] = (
+        f"mysql+pymysql://{quote_plus(db_user)}:"
+        f"{quote_plus(db_password)}@{db_host}:{db_port}/{db_name}"
+    )
+    app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
+        "connect_args": {"ssl": {}}
+    }
+else:
+    app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
+
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
