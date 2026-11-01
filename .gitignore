@@ -9,3 +9,25 @@ __pycache__/
 instance/
 *.sqlite
 *.db
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Python virtual environments
+venv/
+.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Local database and backup files
+*.db
+*.sqlite3
+*.sql
+*.bak
+
+# IDE
+.vscode/
