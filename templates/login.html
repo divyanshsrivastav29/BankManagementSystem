@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,6 +24,8 @@
             color: #0f172a;
         }
 
+        /* Main Layout */
+
         .login-wrapper {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -35,7 +38,8 @@
             box-shadow: 0 25px 70px rgba(15, 23, 42, .12);
         }
 
-        /* Left branding panel */
+        /* Left Branding Panel */
+
         .brand-panel {
             position: relative;
             display: flex;
@@ -44,7 +48,12 @@
             padding: 45px;
             overflow: hidden;
             color: #fff;
-            background: linear-gradient(145deg, #0b1739, #153d7a 65%, #176b87);
+            background: linear-gradient(
+                145deg,
+                #0b1739,
+                #153d7a 65%,
+                #176b87
+            );
         }
 
         .brand-panel::before,
@@ -160,6 +169,7 @@
             place-items: center;
             width: 30px;
             height: 30px;
+            flex-shrink: 0;
             border-radius: 9px;
             background: rgba(255,255,255,.12);
             color: #a9e6ff;
@@ -170,7 +180,8 @@
             font-size: 12px;
         }
 
-        /* Right login panel */
+        /* Right Login Panel */
+
         .form-panel {
             display: flex;
             align-items: center;
@@ -182,6 +193,8 @@
             width: 100%;
             max-width: 360px;
         }
+
+        /* Mobile brand is not needed */
 
         .mobile-brand {
             display: none;
@@ -210,6 +223,8 @@
             line-height: 1.7;
         }
 
+        /* Flash Messages */
+
         .messages {
             margin-bottom: 20px;
         }
@@ -233,6 +248,8 @@
             background: #dbeafe;
             color: #1e40af;
         }
+
+        /* Form Fields */
 
         .form-group {
             margin-bottom: 21px;
@@ -291,6 +308,8 @@
             cursor: pointer;
         }
 
+        /* Forgot Password */
+
         .forgot-row {
             display: flex;
             justify-content: flex-end;
@@ -308,6 +327,8 @@
         .forgot-row a:hover {
             text-decoration: underline;
         }
+
+        /* Login Button */
 
         .login-btn {
             display: block;
@@ -328,6 +349,8 @@
             transform: translateY(-1px);
             box-shadow: 0 12px 22px rgba(37,99,235,.27);
         }
+
+        /* Security Note */
 
         .security-note {
             display: flex;
@@ -354,49 +377,105 @@
             line-height: 1.7;
         }
 
+        /* =================================
+           TABLET AND MOBILE RESPONSIVENESS
+           ================================= */
+
         @media (max-width: 800px) {
+
             body {
                 padding: 20px;
+                align-items: flex-start;
             }
 
             .login-wrapper {
                 grid-template-columns: 1fr;
                 max-width: 470px;
                 min-height: auto;
+                margin: 15px auto;
             }
 
+            /* IMPORTANT: Keep blue panel visible */
+
             .brand-panel {
-                display: none;
+                display: flex;
+                min-height: 420px;
+                padding: 35px 30px;
+            }
+
+            .brand-content {
+                margin-top: 35px;
+                margin-bottom: 35px;
+            }
+
+            .brand-content h2 {
+                font-size: 34px;
+            }
+
+            .brand-content p {
+                font-size: 14px;
+            }
+
+            /* Same branding, no extra mobile logo */
+
+            .mobile-brand {
+                display: none !important;
             }
 
             .form-panel {
                 padding: 40px 30px;
             }
 
-            .mobile-brand {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                margin-bottom: 35px;
-            }
-
-            .mobile-brand .brand-logo {
-                background: #e8efff;
-                color: #1d4ed8;
-            }
-
-            .mobile-brand .brand-name {
-                color: #10203e;
-                font-size: 20px;
-            }
-
-            .mobile-brand .brand-tagline {
-                color: #64748b;
-                font-size: 10px;
+            .login-content {
+                width: 100%;
+                max-width: 360px;
             }
         }
 
+        /* Small Mobile Screens */
+
         @media (max-width: 380px) {
+
+            body {
+                padding: 12px;
+            }
+
+            .login-wrapper {
+                margin: 8px auto;
+            }
+
+            .brand-panel {
+                min-height: 390px;
+                padding: 25px 20px;
+            }
+
+            .brand-name {
+                font-size: 21px;
+            }
+
+            .brand-content {
+                margin-top: 25px;
+                margin-bottom: 25px;
+            }
+
+            .brand-content h2 {
+                font-size: 28px;
+            }
+
+            .brand-content p {
+                font-size: 13px;
+                line-height: 1.7;
+            }
+
+            .feature-list {
+                gap: 12px;
+                margin-top: 22px;
+            }
+
+            .feature {
+                font-size: 12px;
+            }
+
             .form-panel {
                 padding: 30px 20px;
             }
@@ -404,26 +483,44 @@
             .login-content h1 {
                 font-size: 28px;
             }
+
+            .bottom-note {
+                margin-top: 25px;
+            }
         }
     </style>
 </head>
 
 <body>
+
     <main class="login-wrapper">
 
+        <!-- LEFT BLUE BRANDING PANEL -->
+
         <section class="brand-panel">
+
             <div class="brand">
+
                 <div class="brand-logo">🏦</div>
+
                 <div>
                     <div class="brand-name">BANK</div>
-                    <div class="brand-tagline">Banking made simple</div>
+                    <div class="brand-tagline">
+                        Banking made simple
+                    </div>
                 </div>
+
             </div>
 
             <div class="brand-content">
-                <span class="eyebrow">YOUR FINANCES, YOUR FUTURE</span>
 
-                <h2>Banking built around your peace of mind.</h2>
+                <span class="eyebrow">
+                    YOUR FINANCES, YOUR FUTURE
+                </span>
+
+                <h2>
+                    Banking built around your peace of mind.
+                </h2>
 
                 <p>
                     Manage your accounts, track transactions and stay
@@ -432,81 +529,118 @@
                 </p>
 
                 <div class="feature-list">
+
                     <div class="feature">
                         <span class="feature-icon">✓</span>
                         Secure account access
                     </div>
+
                     <div class="feature">
                         <span class="feature-icon">↗</span>
                         Simple transaction management
                     </div>
+
                     <div class="feature">
                         <span class="feature-icon">▤</span>
                         Clear account statements
                     </div>
+
                 </div>
+
             </div>
 
             <div class="brand-footer">
                 A smarter way to manage your banking.
             </div>
+
         </section>
 
+        <!-- RIGHT LOGIN PANEL -->
+
         <section class="form-panel">
+
             <div class="login-content">
 
-                <div class="mobile-brand">
-                    <div class="brand-logo">⌂</div>
-                    <div>
-                        <div class="brand-name">FINOVA</div>
-                        <div class="brand-tagline">Banking made simple</div>
-                    </div>
+                <div class="welcome-label">
+                    Welcome back
                 </div>
 
-                <div class="welcome-label">Welcome back</div>
-                <h1>Sign in to your account</h1>
+                <h1>
+                    Sign in to your account
+                </h1>
+
                 <p class="intro">
-                    Enter your login details to access your banking dashboard.
+                    Enter your login details to access your
+                    banking dashboard.
                 </p>
 
+                <!-- Flask Flash Messages -->
+
                 {% with messages = get_flashed_messages(with_categories=true) %}
+
                     {% if messages %}
+
                         <div class="messages">
+
                             {% for category, message in messages %}
+
                                 <div class="message
                                     {% if category == 'success' %}success
                                     {% elif category == 'info' %}info
                                     {% endif %}">
+
                                     {{ message }}
+
                                 </div>
+
                             {% endfor %}
+
                         </div>
+
                     {% endif %}
+
                 {% endwith %}
 
+                <!-- Login Form -->
+
                 <form method="POST" action="{{ url_for('login') }}">
+
                     {{ form.hidden_tag() }}
 
+                    <!-- Username -->
+
                     <div class="form-group">
+
                         {{ form.username.label }}
 
                         <div class="input-wrap">
+
                             {{ form.username(
                                 placeholder="Enter your username",
                                 autocomplete="username",
                                 required=true
                             ) }}
+
                         </div>
 
                         {% for error in form.username.errors %}
-                            <small style="color:#dc2626;">{{ error }}</small>
+
+                            <small style="color:#dc2626;">
+                                {{ error }}
+                            </small>
+
                         {% endfor %}
+
                     </div>
 
+                    <!-- Password -->
+
                     <div class="form-group">
+
                         {{ form.password.label }}
 
                         <div class="input-wrap">
+
                             {{ form.password(
                                 placeholder="Enter your password",
                                 autocomplete="current-password",
@@ -523,53 +657,93 @@
                             >
                                 Show
                             </button>
+
                         </div>
 
                         {% for error in form.password.errors %}
-                            <small style="color:#dc2626;">{{ error }}</small>
+
+                            <small style="color:#dc2626;">
+                                {{ error }}
+                            </small>
+
                         {% endfor %}
+
                     </div>
 
+                    <!-- Forgot Password -->
+
                     <div class="forgot-row">
+
                         <a href="{{ url_for('forgot_password') }}">
                             Forgot Password?
                         </a>
+
                     </div>
+
+                    <!-- Submit Button -->
 
                     {{ form.submit(
                         class="login-btn",
                         value="Sign In to Dashboard"
                     ) }}
+
                 </form>
 
+                <!-- Security Note -->
+
                 <div class="security-note">
+
                     <span>●</span>
+
                     Secure sign-in to your account
+
                 </div>
 
+                <!-- Footer -->
+
                 <div class="bottom-note">
+
                     &copy; 2026 Bank Management System.<br>
+
                     For authorized users only.
+
                 </div>
+
             </div>
+
         </section>
 
     </main>
 
+    <!-- Password Visibility Script -->
+
     <script>
-        const passwordField = document.getElementById("password");
-        const toggleButton = document.getElementById("togglePassword");
+
+        const passwordField =
+            document.getElementById("password");
+
+        const toggleButton =
+            document.getElementById("togglePassword");
 
         toggleButton.addEventListener("click", function () {
-            const isPassword = passwordField.type === "password";
 
-            passwordField.type = isPassword ? "text" : "password";
-            toggleButton.textContent = isPassword ? "Hide" : "Show";
+            const isPassword =
+                passwordField.type === "password";
+
+            passwordField.type =
+                isPassword ? "text" : "password";
+
+            toggleButton.textContent =
+                isPassword ? "Hide" : "Show";
+
             toggleButton.setAttribute(
                 "aria-label",
                 isPassword ? "Hide password" : "Show password"
             );
+
         });
+
     </script>
+
 </body>
 </html>
