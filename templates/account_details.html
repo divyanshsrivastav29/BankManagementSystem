@@ -99,7 +99,21 @@
         .back {
             background: #475569;
         }
-    </style>
+    
+
+        /* Mobile layout improvements — desktop styles remain unchanged */
+        @media (max-width: 600px) {
+            nav { padding: 14px 16px; align-items: flex-start; flex-direction: column; }
+            nav div { display: flex; flex-wrap: wrap; gap: 8px 14px; }
+            nav a { margin: 0; }
+            .container { width: 100%; margin: 18px auto; padding: 0 12px; }
+            .card { padding: 20px 16px; }
+            .details { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+            .value { overflow-wrap: anywhere; }
+            .actions { display: grid; grid-template-columns: 1fr; gap: 8px; }
+            .btn { display: block; width: 100%; margin: 0; text-align: center; }
+        }
+</style>
 </head>
 
 <body>

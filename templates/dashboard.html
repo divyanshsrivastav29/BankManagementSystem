@@ -6,7 +6,7 @@
 <div class="pro-dashboard">
 
     <!-- Sidebar -->
-    <aside class="pro-sidebar">
+    <aside class="pro-sidebar" id="pro-sidebar">
         <a href="{{ url_for('dashboard') }}" class="pro-brand">
             <span class="pro-brand-icon">₹</span>
             <span>
@@ -62,11 +62,19 @@
             </div>
         </div>
     </aside>
+    <button type="button" class="pro-sidebar-overlay" id="pro-sidebar-overlay" aria-label="Close navigation menu" tabindex="-1"></button>
 
     <!-- Main workspace -->
     <main class="pro-main">
 
         <header class="pro-topbar">
+            <button type="button" class="pro-menu-toggle"
+                    id="pro-menu-toggle"
+                    aria-label="Open navigation menu"
+                    aria-controls="pro-sidebar"
+                    aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
             <div>
                 <div class="pro-breadcrumb">Workspace / Dashboard</div>
                 <h1>Dashboard</h1>
@@ -266,6 +274,51 @@
             year: "numeric"
         }).format(new Date());
     }
+
+    const dashboard = document.querySelector(".pro-dashboard");
+    const menuButton = document.getElementById("pro-menu-toggle");
+    const overlay = document.getElementById("pro-sidebar-overlay");
+    const sidebar = document.getElementById("pro-sidebar");
+
+    function setMenuOpen(isOpen) {
+        if (!dashboard || !menuButton) return;
+        dashboard.classList.toggle("pro-menu-open", isOpen);
+        menuButton.setAttribute("aria-expanded", String(isOpen));
+        menuButton.setAttribute(
+            "aria-label",
+            isOpen ? "Close navigation menu" : "Open navigation menu"
+        );
+        if (overlay) overlay.tabIndex = isOpen ? 0 : -1;
+    }
+
+    if (menuButton) {
+        menuButton.addEventListener("click", function () {
+            const isOpen = dashboard && dashboard.classList.contains("pro-menu-open");
+            setMenuOpen(!isOpen);
+        });
+    }
+
+    if (overlay) {
+        overlay.addEventListener("click", function () {
+            setMenuOpen(false);
+        });
+    }
+
+    if (sidebar) {
+        sidebar.querySelectorAll(".pro-nav-link").forEach(function (link) {
+            link.addEventListener("click", function () {
+                setMenuOpen(false);
+            });
+        });
+    }
+
+    document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") setMenuOpen(false);
+    });
+
+    window.addEventListener("resize", function () {
+        if (window.innerWidth > 760) setMenuOpen(false);
+    });
 })();
 </script>
 {% endblock %}

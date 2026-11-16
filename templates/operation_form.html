@@ -77,7 +77,18 @@
             background: #fff7ed;
             border-radius: 6px;
         }
-    </style>
+    
+
+        /* Mobile layout improvements — desktop styles remain unchanged */
+        @media (max-width: 600px) {
+            nav { padding: 15px 16px; }
+            .container { width: 100%; margin: 18px auto; padding: 0 12px; }
+            .card { padding: 20px 16px; }
+            .card h1 { font-size: 24px; }
+            button, .back { display: block; width: 100%; margin: 12px 0 0; text-align: center; }
+            input { font-size: 16px; }
+        }
+</style>
 </head>
 
 <body>

@@ -1,4 +1,4 @@
-
+=
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -488,6 +488,121 @@
                 margin-top: 25px;
             }
         }
+
+
+        /* Compact mobile branding panel: keep the full blue welcome section */
+        @media (max-width: 600px) {
+            body {
+                padding: 14px;
+            }
+
+            .login-wrapper {
+                margin: 8px auto;
+            }
+
+            .brand-panel {
+                min-height: 0;
+                padding: 24px 22px 20px;
+                justify-content: flex-start;
+            }
+
+            .brand-logo {
+                width: 42px;
+                height: 42px;
+                font-size: 22px;
+            }
+
+            .brand-name {
+                font-size: 21px;
+            }
+
+            .brand-content {
+                margin-top: 22px;
+                margin-bottom: 0;
+            }
+
+            .eyebrow {
+                padding: 6px 10px;
+                margin-bottom: 13px;
+                font-size: 10px;
+                letter-spacing: 1.2px;
+            }
+
+            .brand-content h2 {
+                max-width: 100%;
+                font-size: clamp(25px, 7vw, 30px);
+                line-height: 1.18;
+                letter-spacing: -.7px;
+            }
+
+            .brand-content p {
+                max-width: 100%;
+                margin-top: 11px;
+                font-size: 13px;
+                line-height: 1.6;
+            }
+
+            .feature-list {
+                gap: 10px;
+                margin-top: 18px;
+            }
+
+            .feature {
+                gap: 10px;
+                font-size: 12px;
+            }
+
+            .feature-icon {
+                width: 27px;
+                height: 27px;
+            }
+
+            .brand-footer {
+                margin-top: 18px;
+                font-size: 11px;
+            }
+
+            .form-panel {
+                padding: 30px 24px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .brand-panel {
+                padding: 20px 18px 18px;
+            }
+
+            .brand-content {
+                margin-top: 18px;
+            }
+
+            .brand-content h2 {
+                font-size: 25px;
+            }
+
+            .brand-content p {
+                font-size: 12px;
+                line-height: 1.55;
+            }
+
+            .feature-list {
+                gap: 8px;
+                margin-top: 15px;
+            }
+
+            .feature {
+                font-size: 11px;
+            }
+
+            .brand-footer {
+                margin-top: 14px;
+            }
+
+            .form-panel {
+                padding: 26px 18px;
+            }
+        }
+
     </style>
 </head>
 

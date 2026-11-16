@@ -51,7 +51,19 @@
 
         .message { padding: 10px; background: #e8f5e9; margin: 8px 0; }
         .error { background: #ffebee; }
-    </style>
+    
+
+        /* Mobile layout improvements — table stays readable with horizontal scroll */
+        @media (max-width: 700px) {
+            body { padding: 12px; }
+            .container { width: 100%; padding: 18px 14px; overflow: hidden; }
+            .container h1 { font-size: 23px; line-height: 1.3; }
+            .container > a { margin: 4px 2px; }
+            table { display: block; width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; white-space: nowrap; }
+            th, td { padding: 9px 10px; }
+            td form { display: inline-block; }
+        }
+</style>
 </head>
 <body>
 <div class="container">
