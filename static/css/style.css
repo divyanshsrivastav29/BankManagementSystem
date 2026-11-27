@@ -1,6 +1,123 @@
+/* =========================================
+   GLOBAL SPACING IMPROVEMENTS
+   ========================================= */
+
+/* Consistent page spacing */
+.main,
+.container {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+/* Better spacing between sections */
+.section-title {
+    margin-top: 26px;
+    margin-bottom: 20px;
+}
+
+/* Cards */
+.card,
+.welcome-card {
+    margin-bottom: 24px;
+    padding: 28px;
+}
+
+/* Forms */
+form:not(.logout-form):not(.user-area form) {
+    row-gap: 12px;
+}
+
+.form-control {
+    margin-bottom: 8px;
+}
+
+label {
+    margin-top: 20px;
+    margin-bottom: 9px;
+}
+
+/* Buttons */
+.btn-primary,
+.btn-secondary {
+    margin-top: 8px;
+}
+
+/* Tables */
+.table-container {
+    margin-top: 20px;
+    margin-bottom: 25px;
+}
+
+/* Dashboard spacing */
+.pro-main {
+    padding-top: 38px;
+    padding-bottom: 32px;
+}
+
+.pro-section {
+    margin-top: 36px;
+}
+
+.pro-stats-grid {
+    gap: 20px;
+}
+
+.pro-actions-grid {
+    gap: 16px;
+}
+
+/* Transaction history spacing */
+.th-page {
+    padding-top: 38px;
+    padding-bottom: 32px;
+}
+
+.th-header {
+    margin-bottom: 30px;
+}
+
+.th-summary {
+    margin-bottom: 28px;
+}
+
+/* Mobile spacing */
+@media (max-width: 760px) {
+    .main,
+    .container {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .card,
+    .welcome-card {
+        padding: 20px;
+        margin-bottom: 18px;
+    }
+
+    .pro-main {
+        padding: 22px 14px;
+    }
+
+    .pro-section {
+        margin-top: 27px;
+    }
+
+    .pro-stats-grid {
+        gap: 14px;
+    }
+
+    .pro-actions-grid {
+        gap: 12px;
+    }
+
+    .th-page {
+        padding: 25px 14px;
+    }
+}
+
 
 /* =========================================
-   BANKMANAGER — PROFESSIONAL BANKING UI
+   BANK — PROFESSIONAL BANKING UI
    ========================================= */
 
 :root {
@@ -2223,7 +2340,7 @@ body {
 
     .pro-main {
         min-width: 0;
-        padding: 20px 14px;
+        padding: 10px 14px;
     }
 }
 
@@ -2243,8 +2360,8 @@ body {
 
     .pro-menu-toggle {
         position: absolute;
-        top: 30px;
-        left: 6px;
+        top: 21px;
+        left: 8px;
         z-index: 1002;
     }
 }
